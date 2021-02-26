@@ -1,11 +1,18 @@
 const express = require('express')
 const nanoid = require('nanoid').nanoid
 const bodyParser = require('body-parser')
+const swaggerUI = require('swagger-ui-express')
+const YAML = require('yamljs')
+
+const document = YAML.load('./docs/openapi.yaml')
 
 const app = express()
 const data = []
 
 app.use(bodyParser.json())
+
+app.use('/docs', swaggerUI.serve)
+app.get('/docs', swaggerUI.setup(document))
 
 app.use((req, res, next) => {
     if (req.headers['authorization'] === 'token123') {

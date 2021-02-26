@@ -1,0 +1,162 @@
+openapi: 3.0.0
+
+info:
+  title: pizza API
+  description: CRUD de pizza
+  contact:
+    name: anotaaidev
+  license:
+    name: Todos direitos reservados
+  version: 1.0.0
+  
+servers:
+  - url: http://localhost:{port}/
+    description: Servidor local
+    variables:
+      port:
+        default: "3000"
+        description: Porta em que o servidor está escutando
+         
+tags:
+  - name: auth
+    description: Rotas autenticadas
+
+paths:
+  /pizza:
+    get:
+      description: Retorna todas pizzas
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - auth
+      responses:
+        "200":
+          description: Ok
+          content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/pizza"
+        default:
+          $ref: "#/components/responses/error"
+    post:
+      description: Cria uma pizza
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/pizza"
+      responses:
+        "200":
+          description: Ok
+          content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/pizza"
+        default:
+          $ref: "#/components/responses/error"
+  /pizza/{id}:
+    put:
+      description: Atualiza uma pizza
+      parameters:
+        - in: path
+          name: id
+          schema:
+            $ref: "#/components/schemas/id"
+          required: true
+
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/pizza"
+      responses:
+        "200":
+          description: Ok
+          content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/pizza"
+        default:
+          $ref: "#/components/responses/error"
+    get:
+      description: Busca pizza pelo id
+      parameters:
+        - in: path
+          name: id
+          schema:
+            $ref: "#/components/schemas/id"
+          required: true
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - auth
+      responses:
+        "200":
+          description: Ok
+          content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/pizza"
+        default:
+          $ref: "#/components/responses/error"
+    delete:
+      description: deleta pziza pelo id
+      parameters:
+        - in: path
+          name: id
+          schema:
+            $ref: "#/components/schemas/id"
+          required: true
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - auth
+      responses:
+        "200":
+          description: Ok
+        default:
+          $ref: "#/components/responses/error"
+components:
+  schemas:
+    id:
+      type: string
+      format: objectId
+      example: as458795
+    pizza:
+      type: object
+      required:
+        - flavor
+        - price
+      properties:
+        id:
+          $ref: "#/components/schemas/id"
+        flavor:
+          type: string
+        price:
+          type: number
+    
+  responses:
+    error:
+      description: Mensagem genérica de erro
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message: 
+                type: string
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: authorization
